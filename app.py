@@ -36,9 +36,9 @@ def input_content():
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        area = st.slider("Area (sq ft)",1000,10000 1200, step=10)
-        bedrooms = st.slider("Bedrooms", 1, 10, 3)
-        bathrooms = st.slider("Bathrooms", 1, 10, 2)
+        area = st.slider("Area (sq ft)",1000,10000,1200, step=100)
+        bedrooms = st.slider("Bedrooms", 1, 10, 1)
+        bathrooms = st.slider("Bathrooms", 1, 10, 1)
 
     with col2:
         stories = st.slider("Stories", 1, 5, 1)
