@@ -2,11 +2,9 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
-
 # Load model
 with open('housing_price_model.pkl', 'rb') as f:
     model = pickle.load(f)
-
 st.set_page_config(page_title="House Price Predictor", layout="wide")
 
 # -----------------------------
@@ -38,7 +36,7 @@ def input_content():
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        area = st.slider("Area (sq ft)", 100, 5000, 1200, step=10)
+        area = st.slider("Area (sq ft)",1000,10000 1200, step=10)
         bedrooms = st.slider("Bedrooms", 1, 10, 3)
         bathrooms = st.slider("Bathrooms", 1, 10, 2)
 
