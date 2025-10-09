@@ -33,16 +33,14 @@ It follows these steps in `house-Price.ipynb`:
 ## Preprocessing
 - One-hot encoding with `pd.get_dummies(..., drop_first=True)` for categorical columns.
 - Outlier removal using IQR on `area` and `price` (applied on combined features-target frames, then split back).
-- Yeo–Johnson `PowerTransformer` applied to `area` and `price` to reduce skew and standardize.
-- `StandardScaler` applied to feature matrix.
-
+- Log transormation applied to `area` and `price` to reduce skew 
 ## Modeling
 - Model: `sklearn.linear_model.LinearRegression`
 - Split: `train_test_split(test_size=0.2, random_state=42)`
 
 ## Results
 - Test performance (on transformed scale):
-  - R² ≈ 0.5744
+  - R² ≈  0.6758
   - MAE ≈ 0.4761
 - Scatter plot of Actual vs Predicted shows moderate fit with dispersion around the diagonal.
 
