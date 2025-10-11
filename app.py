@@ -6,10 +6,7 @@ import pickle
 with open('housing_price_model.pkl', 'rb') as f:
     model = pickle.load(f)
 st.set_page_config(page_title="House Price Predictor", layout="wide")
-
-# -----------------------------
 # Helper function to create colored sections
-# -----------------------------
 def colored_section(title, color, content_func):
     st.markdown(f"""
     <div style="background-color:{color}; padding:25px; border-radius:10px; margin-bottom:20px">
@@ -19,24 +16,18 @@ def colored_section(title, color, content_func):
     
     with st.container():
         content_func()
-
-# -----------------------------
 # HEADER SECTION
-# -----------------------------
 def header_content():
     st.write("Predict your house price by entering all the features below.")
 
 colored_section("🏠 House Price Prediction", "#f06292", header_content)  # Pink background
-
-# -----------------------------
 # INPUT SECTION
-# -----------------------------
 def input_content():
     st.header("📝 Enter House Details")
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        area = st.slider("Area (sq ft)",1000,10000,1200, step=100)
+        area = st.number_input("Area (in sqft)", min_value=100, max_value=10000, value=500)
         bedrooms = st.slider("Bedrooms", 1, 10, 1)
         bathrooms = st.slider("Bathrooms", 1, 10, 1)
 
