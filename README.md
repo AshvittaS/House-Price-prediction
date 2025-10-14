@@ -1,65 +1,43 @@
-# House-Price-prediction
+# House Price Prediction 
 
-Predict house prices using a simple linear regression workflow built in a Jupyter notebook.
+Predict house prices on `Housing.csv` using a clear, reproducible linear regression workflow. This README focuses on what is unique in the notebook and the exact process followed.
 
-## Overview
-This project explores and models the `Housing.csv` dataset to predict `price`.
-It follows these steps in `house-Price.ipynb`:
-- Load data and inspect shape/columns
-- Exploratory Data Analysis (missing values, basic distributions, outliers)
-- Encode categorical features and map binary yes/no to 1/0
-- Distribution and skewness checks; apply log transform with `np.log1p` to `area` and `price`
-- Train/test split and Linear Regression modeling
-- Evaluation and visualization of predictions
+## What’s Unique in This Notebook
+- **Custom outlier visualization helper**: A bespoke `outliers_boxplot(features, target)` function is used to inspect outliers with boxplots on both train and test splits, making the outlier review step explicit and repeatable.
+- **Consistent log-space learning and serving**: Both `area` (feature) and `price` (target) are transformed with `np.log1p` during training; at inference time the Streamlit app applies `log1p` to `area` and `expm1` to the prediction to return prices on the original scale.
+- **Thoughtful encoding strategy**: Binary yes/no variables are mapped to 0/1, while `furnishingstatus` uses one-hot encoding with `drop='first'` to avoid the dummy variable trap; the app mirrors these encodings precisely.
+- **Evaluation emphasizes interpretability**: Reports R², Adjusted R², and MAE on the log scale, and contrasts train vs test to check generalization rather than a single metric snapshot.
+- **Skew-awareness and IQR-based outlier counts**: Documents skewness and IQR outlier counts for `area` and `price` separately on train and test, helping justify the log transform rather than applying it blindly.
 
-## Dataset
-- File: `Housing.csv`
-- Target: `price`
-- Example features used:
-  - Numeric: `area`
-  - Categorical: `mainroad`, `guestroom`, `basement`, `hotwaterheating`, `airconditioning`, `parking`, `prefarea`, `furnishingstatus`
+## End-to-End Process Followed (Notebook)
+1. **Load and inspect data**: Shapes, columns, and a null-value audit confirm no missing values.
+2. **Train/test split**: Hold out a test set to validate generalization.
+3. **EDA and outliers**:
+   - Visualize distributions and boxplots via the custom helper.
+   - Record outlier counts for `area` and `price` on train/test.
+   - Measure skewness to motivate power/log transforms.
+4. **Feature engineering and encoding**:
+   - Map binary categoricals (`yes`/`no`) to 1/0.
+   - One-hot encode `furnishingstatus` with the first level dropped.
+5. **Log transforms**:
+   - Apply `np.log1p` to `area` (feature) and `price` (target) to reduce skew and stabilize variance.
+6. **Modeling**:
+   - Fit `LinearRegression` on the preprocessed, log-transformed data.
+7. **Evaluation**:
+   - Compute R², Adjusted R², and MAE on the log scale for train and test.
+   - Inspect residuals to ensure no obvious systematic bias.
 
-## EDA Highlights
-- No missing values were found via `df.isnull().sum()`.
-- Train/test shapes before cleaning: `(436, 15)` and `(109, 15)`.
-- Outliers (IQR method) observed notably in `area` and `price`:
-  - Train: `area`=11, `price`=12
-  - Test: `area`=1, `price`=2
-- Skewness (after outlier removal, before power transform):
-  - `area` train: ~0.80; test: ~0.44
-  - `price` train: ~0.76; test: ~0.64
+## Model–Serving Consistency (Streamlit App)
+- The app takes raw inputs, applies the same binary mappings and `furnishingstatus` one-hot structure used in training.
+- It transforms `area` with `np.log1p` before prediction and inverse-transforms the output with `np.expm1`, preserving training–serving parity.
 
-## Preprocessing
-- One-hot encoding for `furnishingstatus` with first category dropped (avoids dummy trap).
-- Binary columns (`mainroad`, `guestroom`, `basement`, `hotwaterheating`, `airconditioning`, `prefarea`) mapped using `{'yes': 1, 'no': 0}`.
-- Log transform applied to `area` and `price` via `np.log1p` to reduce skew.
-## Modeling
-- Model: `sklearn.linear_model.LinearRegression`
-- Split: `train_test_split(test_size=0.2, random_state=42)`
+## Results (from the notebook)
+- **Train**: R² ≈ 0.715, Adjusted R² ≈ 0.707, MAE ≈ 0.145 (log scale)
+- **Test**: R² ≈ 0.678, Adjusted R² ≈ 0.634, MAE ≈ 0.200 (log scale)
 
-## Results
-- Performance (evaluated on log-transformed scale):
-  - Train R²: 0.7154, Adjusted R²: 0.7066, MAE: 0.1448
-  - Test R²: 0.6782, Adjusted R²: 0.6342, MAE: 0.1998
-- Scatter plot of Actual vs Predicted shows moderate fit with dispersion around the diagonal.
-
-## How to Run
-
-### Notebook
-1. Ensure dependencies are installed (see `requirements.txt`).
-2. Open `house-Price.ipynb` in Jupyter (e.g., `jupyter notebook`).
-3. Ensure `Housing.csv` is in the same directory.
-4. Run cells top to bottom.
-
-### Streamlit App
-1. Ensure `housing_price_model.pkl` exists in the project root (generated by the notebook).
-2. Install dependencies: `pip install -r requirements.txt`.
-3. Run the app:
-   
-   ```bash
-   streamlit run app.py
-   ```
-4. Open the provided local URL in your browser and enter house details to get a prediction.
+## Notebook and App
+- Notebook: `house-Price.ipynb` (run top-to-bottom with `Housing.csv` present; dependencies in `requirements.txt`).
+- Deployed app: [House Price Prediction App](https://house-price-prediction-uwoiyv3hfix4exwda9awqz.streamlit.app/)
 
 ## Notes
-- Evaluation metrics are computed on log-transformed targets (`np.log1p`). To view metrics in the original price scale, inverse-transform with `np.expm1` before evaluation.
+- Metrics are reported in log space. To interpret errors in rupees, inverse-transform predictions with `np.expm1` and evaluate on the original scale.
