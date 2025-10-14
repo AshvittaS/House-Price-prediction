@@ -31,10 +31,6 @@ Predict house prices on `Housing.csv` using a clear, reproducible linear regress
 - The app takes raw inputs, applies the same binary mappings and `furnishingstatus` one-hot structure used in training.
 - It transforms `area` with `np.log1p` before prediction and inverse-transforms the output with `np.expm1`, preserving training–serving parity.
 
-## Results (from the notebook)
-- **Train**: R² ≈ 0.715, Adjusted R² ≈ 0.707, MAE ≈ 0.145 (log scale)
-- **Test**: R² ≈ 0.678, Adjusted R² ≈ 0.634, MAE ≈ 0.200 (log scale)
-
 ## Notebook and App
 - Notebook: `house-Price.ipynb` (run top-to-bottom with `Housing.csv` present; dependencies in `requirements.txt`).
 - Deployed app: [House Price Prediction App](https://house-price-prediction-uwoiyv3hfix4exwda9awqz.streamlit.app/)
